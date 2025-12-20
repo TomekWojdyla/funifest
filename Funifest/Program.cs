@@ -1,36 +1,62 @@
+using System.Text.Json.Serialization;
+using Funifest.Infrastructure.Data;
+using Funifest.Application.Services.Interfaces;
+using Funifest.Application.Services.Implementations;
+using Microsoft.EntityFrameworkCore;
 
-namespace Funifest
+var builder = WebApplication.CreateBuilder(args);
+
+// CORS
+builder.Services.AddCors(options =>
 {
-    public class Program
+    options.AddPolicy("FrontendPolicy", policy =>
     {
-        public static void Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
-            // Add services to the container.
+builder.Services.AddControllers()
+    .AddJsonOptions(o =>
+    {
+        // to masz lub doda³eœ dla innych rzeczy,
+        // mo¿emy tu dok³adaæ ustawienia JSON
+    });
 
-            builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
-            var app = builder.Build();
+builder.Services.AddScoped<ISkydiverService, SkydiverService>();
+builder.Services.AddScoped<IPassengerService, PassengerService>();
+builder.Services.AddScoped<IParachuteService, ParachuteService>();
+builder.Services.AddScoped<IExitPlanService, ExitPlanService>();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+//builder.Services.AddDbContext<FunifestContext>(options =>
+//    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            app.UseHttpsRedirection();
+builder.Services.AddDbContext<FunifestContext>(options =>
+    options.UseSqlite(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        b => b.MigrationsAssembly("Funifest.Infrastructure")
+    ));
 
-            app.UseAuthorization();
+var app = builder.Build();
 
-
-            app.MapControllers();
-
-            app.Run();
-        }
-    }
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
+
+//app.UseHttpsRedirection();
+
+// W£¥CZ CORS
+app.UseCors("FrontendPolicy");
+
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();
