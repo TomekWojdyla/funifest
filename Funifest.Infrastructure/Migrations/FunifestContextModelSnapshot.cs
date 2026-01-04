@@ -72,7 +72,7 @@ namespace Funifest.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Model")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -120,6 +120,12 @@ namespace Funifest.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("IsAFFInstructor")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsTandemInstructor")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -128,10 +134,18 @@ namespace Funifest.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("ParachuteId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("INTEGER");
+
                     b.Property<float?>("Weight")
                         .HasColumnType("REAL");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ParachuteId");
 
                     b.ToTable("Skydivers");
                 });
@@ -153,6 +167,14 @@ namespace Funifest.Infrastructure.Migrations
                     b.Navigation("ExitPlan");
 
                     b.Navigation("Parachute");
+                });
+
+            modelBuilder.Entity("Funifest.Domain.Models.Skydiver", b =>
+                {
+                    b.HasOne("Funifest.Domain.Models.Parachute", null)
+                        .WithMany()
+                        .HasForeignKey("ParachuteId")
+                        .OnDelete(DeleteBehavior.SetNull);
                 });
 
             modelBuilder.Entity("Funifest.Domain.Models.ExitPlan", b =>

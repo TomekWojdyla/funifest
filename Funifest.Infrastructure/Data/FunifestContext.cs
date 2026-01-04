@@ -19,6 +19,13 @@ public class FunifestContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        // Skydiver -> Parachute (opcjonalnie: Student może nie mieć przypisanego)
+        modelBuilder.Entity<Skydiver>()
+            .HasOne<Parachute>()
+            .WithMany()
+            .HasForeignKey(s => s.ParachuteId)
+            .OnDelete(DeleteBehavior.SetNull);
+
         // ExitPlan 1 - * ExitSlot
         modelBuilder.Entity<ExitSlot>()
             .HasOne(s => s.ExitPlan)

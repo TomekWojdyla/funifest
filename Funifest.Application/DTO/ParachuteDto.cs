@@ -1,15 +1,10 @@
-﻿namespace Funifest.Domain.Models;
+﻿namespace Funifest.Application.DTO;
 
-public class Parachute
+public class ParachuteDto
 {
     public int Id { get; set; }
-
-    // np. Navigator, Safire 3, Crossfire 3
     public string Model { get; set; } = string.Empty;
-
-    // np. 260, 169
     public int Size { get; set; }
-
-    // Student / Sport / Tandem itd.
     public string Type { get; set; } = string.Empty;
 }
+

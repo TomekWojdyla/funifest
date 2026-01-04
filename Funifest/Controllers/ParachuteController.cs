@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Funifest.Domain.Models;
+﻿using Funifest.Application.DTO;
 using Funifest.Application.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Funifest.Controllers;
 
@@ -16,29 +16,32 @@ public class ParachuteController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Parachute>>> GetAll()
+    public async Task<ActionResult<IEnumerable<ParachuteDto>>> GetAll()
     {
-        return Ok(await _service.GetAllAsync());
+        var result = await _service.GetAllAsync();
+        return Ok(result);
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<Parachute>> GetById(int id)
+    public async Task<ActionResult<ParachuteDto>> GetById(int id)
     {
         var result = await _service.GetByIdAsync(id);
-        return result is null ? NotFound() : Ok(result);
+        if (result == null) return NotFound();
+        return Ok(result);
     }
 
     [HttpPost]
-    public async Task<ActionResult<Parachute>> Create([FromBody] Parachute parachute)
+    public async Task<ActionResult<ParachuteDto>> Create([FromBody] CreateParachuteDto dto)
     {
-        var created = await _service.CreateAsync(parachute);
+        var created = await _service.CreateAsync(dto);
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
 
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        bool ok = await _service.DeleteAsync(id);
+        var ok = await _service.DeleteAsync(id);
         return ok ? NoContent() : NotFound();
     }
 }
+

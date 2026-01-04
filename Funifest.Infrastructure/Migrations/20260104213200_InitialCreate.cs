@@ -31,7 +31,7 @@ namespace Funifest.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    Model = table.Column<string>(type: "TEXT", nullable: false),
                     Size = table.Column<int>(type: "INTEGER", nullable: false),
                     Type = table.Column<string>(type: "TEXT", nullable: false)
                 },
@@ -53,22 +53,6 @@ namespace Funifest.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Passengers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Skydivers",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Weight = table.Column<float>(type: "REAL", nullable: true),
-                    LicenseLevel = table.Column<string>(type: "TEXT", nullable: false),
-                    FirstName = table.Column<string>(type: "TEXT", nullable: false),
-                    LastName = table.Column<string>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Skydivers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -100,6 +84,32 @@ namespace Funifest.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Skydivers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Weight = table.Column<float>(type: "REAL", nullable: true),
+                    LicenseLevel = table.Column<string>(type: "TEXT", nullable: false),
+                    Role = table.Column<int>(type: "INTEGER", nullable: false),
+                    IsAFFInstructor = table.Column<bool>(type: "INTEGER", nullable: false),
+                    IsTandemInstructor = table.Column<bool>(type: "INTEGER", nullable: false),
+                    ParachuteId = table.Column<int>(type: "INTEGER", nullable: true),
+                    FirstName = table.Column<string>(type: "TEXT", nullable: false),
+                    LastName = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Skydivers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Skydivers_Parachutes_ParachuteId",
+                        column: x => x.ParachuteId,
+                        principalTable: "Parachutes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_ExitSlots_ExitPlanId",
                 table: "ExitSlots",
@@ -108,6 +118,11 @@ namespace Funifest.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_ExitSlots_ParachuteId",
                 table: "ExitSlots",
+                column: "ParachuteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Skydivers_ParachuteId",
+                table: "Skydivers",
                 column: "ParachuteId");
         }
 
