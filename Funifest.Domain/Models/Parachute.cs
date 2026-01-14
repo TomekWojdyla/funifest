@@ -7,6 +7,9 @@ public class Parachute
     // np. Navigator, Safire 3, Crossfire 3
     public string Model { get; set; } = string.Empty;
 
+    // np. "DZ1", "Sabre Blue"
+    public string? CustomName { get; set; }
+
     // np. 260, 169
     public int Size { get; set; }
 

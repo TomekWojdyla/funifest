@@ -72,6 +72,9 @@ namespace Funifest.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("CustomName")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Model")
                         .IsRequired()
                         .HasColumnType("TEXT");

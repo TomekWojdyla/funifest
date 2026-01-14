@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Funifest.Infrastructure.Migrations
 {
     [DbContext(typeof(FunifestContext))]
-    [Migration("20260104213200_InitialCreate")]
+    [Migration("20260114221239_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -74,6 +74,9 @@ namespace Funifest.Infrastructure.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("CustomName")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Model")
                         .IsRequired()

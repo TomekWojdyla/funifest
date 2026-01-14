@@ -32,6 +32,7 @@ namespace Funifest.Infrastructure.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Model = table.Column<string>(type: "TEXT", nullable: false),
+                    CustomName = table.Column<string>(type: "TEXT", nullable: true),
                     Size = table.Column<int>(type: "INTEGER", nullable: false),
                     Type = table.Column<string>(type: "TEXT", nullable: false)
                 },
