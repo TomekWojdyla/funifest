@@ -6,5 +6,8 @@ public class ExitPlan
     public DateTime Date { get; set; }
     public string Aircraft { get; set; } = "";
 
+    public ExitPlanStatus Status { get; set; } = ExitPlanStatus.Draft;
+    public DateTime? DispatchedAt { get; set; }
+
     public List<ExitSlot> Slots { get; set; } = new();
 }

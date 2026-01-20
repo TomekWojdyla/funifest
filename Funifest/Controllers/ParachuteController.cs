@@ -37,6 +37,22 @@ public class ParachuteController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
 
+    [HttpPut("{id:int}/block")]
+    public async Task<ActionResult<ParachuteDto>> Block(int id)
+    {
+        var updated = await _service.BlockAsync(id);
+        if (updated == null) return NotFound();
+        return Ok(updated);
+    }
+
+    [HttpPut("{id:int}/unblock")]
+    public async Task<ActionResult<ParachuteDto>> Unblock(int id)
+    {
+        var updated = await _service.UnblockAsync(id);
+        if (updated == null) return NotFound();
+        return Ok(updated);
+    }
+
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
@@ -44,4 +60,3 @@ public class ParachuteController : ControllerBase
         return ok ? NoContent() : NotFound();
     }
 }
-

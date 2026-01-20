@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Funifest.Application.DTO.ExitPlan;
 using Funifest.Application.Services.Interfaces;
+using Funifest.Application.Exceptions;
 using Funifest.Domain.Models;
 
 namespace Funifest.Controllers;
@@ -16,7 +17,6 @@ public class ExitPlanController : ControllerBase
         _service = service;
     }
 
-    // GET: api/exitplan
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ExitPlan>>> GetAll()
     {
@@ -24,7 +24,6 @@ public class ExitPlanController : ControllerBase
         return Ok(plans);
     }
 
-    // GET: api/exitplan/1
     [HttpGet("{id:int}")]
     public async Task<ActionResult<ExitPlan>> GetById(int id)
     {
@@ -35,7 +34,6 @@ public class ExitPlanController : ControllerBase
         return Ok(plan);
     }
 
-    // POST: api/exitplan
     [HttpPost]
     public async Task<ActionResult<ExitPlan>> Create([FromBody] CreateExitPlanRequest request)
     {
@@ -44,17 +42,91 @@ public class ExitPlanController : ControllerBase
             var created = await _service.CreateAsync(request);
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
+        catch (ConflictException ex)
+        {
+            return Conflict(new { error = ex.Message });
+        }
         catch (Exception ex)
         {
             return BadRequest(new { error = ex.Message });
         }
     }
 
-    // DELETE: api/exitplan/1
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult<ExitPlan>> Update(int id, [FromBody] UpdateExitPlanRequest request)
+    {
+        try
+        {
+            var updated = await _service.UpdateAsync(id, request);
+            if (updated is null)
+                return NotFound();
+
+            return Ok(updated);
+        }
+        catch (ConflictException ex)
+        {
+            return Conflict(new { error = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
+    [HttpPost("{id:int}/dispatch")]
+    public async Task<ActionResult<ExitPlan>> Dispatch(int id)
+    {
+        try
+        {
+            var updated = await _service.DispatchAsync(id);
+            if (updated is null)
+                return NotFound();
+
+            return Ok(updated);
+        }
+        catch (ConflictException ex)
+        {
+            return Conflict(new { error = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
+    [HttpPost("{id:int}/undo-dispatch")]
+    public async Task<IActionResult> UndoDispatch(int id)
+    {
+        try
+        {
+            var ok = await _service.UndoDispatchAsync(id);
+            return ok ? NoContent() : NotFound();
+        }
+        catch (ConflictException ex)
+        {
+            return Conflict(new { error = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var deleted = await _service.DeleteAsync(id);
-        return deleted ? NoContent() : NotFound();
+        try
+        {
+            var deleted = await _service.DeleteAsync(id);
+            return deleted ? NoContent() : NotFound();
+        }
+        catch (ConflictException ex)
+        {
+            return Conflict(new { error = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 }

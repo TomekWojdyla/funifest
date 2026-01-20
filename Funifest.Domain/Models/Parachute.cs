@@ -15,4 +15,8 @@ public class Parachute
 
     // Student / Sport / Tandem itd.
     public string Type { get; set; } = string.Empty;
+
+    public bool ManualBlocked { get; set; }
+    public int? ManualBlockedByExitPlanId { get; set; }
+    public int? AssignedExitPlanId { get; set; }
 }

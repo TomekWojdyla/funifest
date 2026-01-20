@@ -18,32 +18,36 @@ public class ParachuteService : IParachuteService
     public async Task<IEnumerable<ParachuteDto>> GetAllAsync()
     {
         return await _context.Parachutes
-            .Select(parachute => new ParachuteDto
+            .Select(p => new ParachuteDto
             {
-                Id = parachute.Id,
-                Model = parachute.Model,
-                CustomName = parachute.CustomName,
-                Size = parachute.Size,
-                Type = parachute.Type
+                Id = p.Id,
+                Model = p.Model,
+                CustomName = p.CustomName,
+                Size = p.Size,
+                Type = p.Type,
+                ManualBlocked = p.ManualBlocked,
+                ManualBlockedByExitPlanId = p.ManualBlockedByExitPlanId,
+                AssignedExitPlanId = p.AssignedExitPlanId
             })
             .ToListAsync();
     }
 
     public async Task<ParachuteDto?> GetByIdAsync(int id)
     {
-        var parachute = await _context.Parachutes
-            .FirstOrDefaultAsync(p => p.Id == id);
-
-        if (parachute == null)
+        var p = await _context.Parachutes.FirstOrDefaultAsync(x => x.Id == id);
+        if (p == null)
             return null;
 
         return new ParachuteDto
         {
-            Id = parachute.Id,
-            Model = parachute.Model,
-            CustomName = parachute.CustomName,
-            Size = parachute.Size,
-            Type = parachute.Type
+            Id = p.Id,
+            Model = p.Model,
+            CustomName = p.CustomName,
+            Size = p.Size,
+            Type = p.Type,
+            ManualBlocked = p.ManualBlocked,
+            ManualBlockedByExitPlanId = p.ManualBlockedByExitPlanId,
+            AssignedExitPlanId = p.AssignedExitPlanId
         };
     }
 
@@ -66,15 +70,64 @@ public class ParachuteService : IParachuteService
             Model = parachute.Model,
             CustomName = parachute.CustomName,
             Size = parachute.Size,
-            Type = parachute.Type
+            Type = parachute.Type,
+            ManualBlocked = parachute.ManualBlocked,
+            ManualBlockedByExitPlanId = parachute.ManualBlockedByExitPlanId,
+            AssignedExitPlanId = parachute.AssignedExitPlanId
+        };
+    }
+
+    public async Task<ParachuteDto?> BlockAsync(int id)
+    {
+        var p = await _context.Parachutes.FirstOrDefaultAsync(x => x.Id == id);
+        if (p == null)
+            return null;
+
+        p.ManualBlocked = true;
+        p.ManualBlockedByExitPlanId = null;
+
+        await _context.SaveChangesAsync();
+
+        return new ParachuteDto
+        {
+            Id = p.Id,
+            Model = p.Model,
+            CustomName = p.CustomName,
+            Size = p.Size,
+            Type = p.Type,
+            ManualBlocked = p.ManualBlocked,
+            ManualBlockedByExitPlanId = p.ManualBlockedByExitPlanId,
+            AssignedExitPlanId = p.AssignedExitPlanId
+        };
+    }
+
+    public async Task<ParachuteDto?> UnblockAsync(int id)
+    {
+        var p = await _context.Parachutes.FirstOrDefaultAsync(x => x.Id == id);
+        if (p == null)
+            return null;
+
+        p.ManualBlocked = false;
+        p.ManualBlockedByExitPlanId = null;
+
+        await _context.SaveChangesAsync();
+
+        return new ParachuteDto
+        {
+            Id = p.Id,
+            Model = p.Model,
+            CustomName = p.CustomName,
+            Size = p.Size,
+            Type = p.Type,
+            ManualBlocked = p.ManualBlocked,
+            ManualBlockedByExitPlanId = p.ManualBlockedByExitPlanId,
+            AssignedExitPlanId = p.AssignedExitPlanId
         };
     }
 
     public async Task<bool> DeleteAsync(int id)
     {
-        var parachute = await _context.Parachutes
-            .FirstOrDefaultAsync(p => p.Id == id);
-
+        var parachute = await _context.Parachutes.FirstOrDefaultAsync(p => p.Id == id);
         if (parachute == null)
             return false;
 

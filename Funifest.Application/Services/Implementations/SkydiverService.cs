@@ -31,6 +31,32 @@ public class SkydiverService : ISkydiverService
         return skydiver;
     }
 
+    public async Task<Skydiver?> BlockAsync(int id)
+    {
+        var s = await _db.Skydivers.FindAsync(id);
+        if (s == null)
+            return null;
+
+        s.ManualBlocked = true;
+        s.ManualBlockedByExitPlanId = null;
+
+        await _db.SaveChangesAsync();
+        return s;
+    }
+
+    public async Task<Skydiver?> UnblockAsync(int id)
+    {
+        var s = await _db.Skydivers.FindAsync(id);
+        if (s == null)
+            return null;
+
+        s.ManualBlocked = false;
+        s.ManualBlockedByExitPlanId = null;
+
+        await _db.SaveChangesAsync();
+        return s;
+    }
+
     public async Task<bool> DeleteAsync(int id)
     {
         var s = await _db.Skydivers.FindAsync(id);
@@ -42,4 +68,3 @@ public class SkydiverService : ISkydiverService
         return true;
     }
 }
-

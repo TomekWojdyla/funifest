@@ -31,14 +31,40 @@ public class PassengerService : IPassengerService
         return passenger;
     }
 
+    public async Task<Passenger?> BlockAsync(int id)
+    {
+        var p = await _context.Passengers.FindAsync(id);
+        if (p == null)
+            return null;
+
+        p.ManualBlocked = true;
+        p.ManualBlockedByExitPlanId = null;
+
+        await _context.SaveChangesAsync();
+        return p;
+    }
+
+    public async Task<Passenger?> UnblockAsync(int id)
+    {
+        var p = await _context.Passengers.FindAsync(id);
+        if (p == null)
+            return null;
+
+        p.ManualBlocked = false;
+        p.ManualBlockedByExitPlanId = null;
+
+        await _context.SaveChangesAsync();
+        return p;
+    }
+
     public async Task<bool> DeleteAsync(int id)
     {
         var p = await _context.Passengers.FindAsync(id);
-        if (p == null) return false;
+        if (p == null)
+            return false;
 
         _context.Passengers.Remove(p);
         await _context.SaveChangesAsync();
         return true;
     }
 }
-

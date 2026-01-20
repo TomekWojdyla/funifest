@@ -35,6 +35,20 @@ public class PassengerController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
 
+    [HttpPut("{id:int}/block")]
+    public async Task<ActionResult<Passenger>> Block(int id)
+    {
+        var updated = await _service.BlockAsync(id);
+        return updated is null ? NotFound() : Ok(updated);
+    }
+
+    [HttpPut("{id:int}/unblock")]
+    public async Task<ActionResult<Passenger>> Unblock(int id)
+    {
+        var updated = await _service.UnblockAsync(id);
+        return updated is null ? NotFound() : Ok(updated);
+    }
+
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {

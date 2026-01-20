@@ -15,7 +15,6 @@ public class SkydiverController : ControllerBase
         _service = service;
     }
 
-    // GET: api/skydiver
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Skydiver>>> GetAll()
     {
@@ -23,7 +22,6 @@ public class SkydiverController : ControllerBase
         return Ok(skydivers);
     }
 
-    // GET: api/skydiver/1
     [HttpGet("{id:int}")]
     public async Task<ActionResult<Skydiver>> GetById(int id)
     {
@@ -34,7 +32,6 @@ public class SkydiverController : ControllerBase
         return Ok(skydiver);
     }
 
-    // POST: api/skydiver
     [HttpPost]
     public async Task<ActionResult<Skydiver>> Create([FromBody] Skydiver newSkydiver)
     {
@@ -42,7 +39,26 @@ public class SkydiverController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
 
-    // DELETE: api/skydiver/1
+    [HttpPut("{id:int}/block")]
+    public async Task<ActionResult<Skydiver>> Block(int id)
+    {
+        var updated = await _service.BlockAsync(id);
+        if (updated is null)
+            return NotFound();
+
+        return Ok(updated);
+    }
+
+    [HttpPut("{id:int}/unblock")]
+    public async Task<ActionResult<Skydiver>> Unblock(int id)
+    {
+        var updated = await _service.UnblockAsync(id);
+        if (updated is null)
+            return NotFound();
+
+        return Ok(updated);
+    }
+
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
