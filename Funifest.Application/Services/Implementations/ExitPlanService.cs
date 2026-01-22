@@ -269,36 +269,18 @@ public class ExitPlanService : IExitPlanService
 
         foreach (var s in skydivers)
         {
-            if (!s.ManualBlocked)
-            {
-                s.ManualBlocked = true;
-                s.ManualBlockedByExitPlanId = id;
-            }
-
             if (s.AssignedExitPlanId == id)
                 s.AssignedExitPlanId = null;
         }
 
         foreach (var p in passengers)
         {
-            if (!p.ManualBlocked)
-            {
-                p.ManualBlocked = true;
-                p.ManualBlockedByExitPlanId = id;
-            }
-
             if (p.AssignedExitPlanId == id)
                 p.AssignedExitPlanId = null;
         }
 
         foreach (var pr in parachutes)
         {
-            if (!pr.ManualBlocked)
-            {
-                pr.ManualBlocked = true;
-                pr.ManualBlockedByExitPlanId = id;
-            }
-
             if (pr.AssignedExitPlanId == id)
                 pr.AssignedExitPlanId = null;
         }
